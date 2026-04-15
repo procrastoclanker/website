@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Events — Blockspace Forum</title>
+  <meta name="description" content="Blockspace Forum events. Where the blockspace community meets.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Events — Blockspace Forum">
+  <meta property="og:description" content="Where the blockspace community meets.">
+  <meta property="og:image" content="{{site_url}}/assets/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@blockspaceforum">
+  <meta name="twitter:title" content="Events — Blockspace Forum">
+  <meta name="twitter:description" content="Where the blockspace community meets.">
+  <meta name="twitter:image" content="{{site_url}}/assets/og-image.png">
+  <link rel="canonical" href="{{site_url}}/events.html">
+  <link rel="icon" href="assets/favicon.ico">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-base="">
+  <nav id="site-nav"></nav>
+
+  <main class="container">
+    <section class="events-hero">
+      <h1>Events</h1>
+      <p class="tagline">Where the blockspace community meets.</p>
+    </section>
+
+    <section class="section-block" style="border-top: none;">
+      <div id="events-list" class="events-list"></div>
+    </section>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="generated/config.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    renderEventsList('events-list');
+  </script>
+</body>
+</html>

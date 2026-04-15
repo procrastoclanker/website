@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PBS 301: The Frontier — Blockspace Forum</title>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="PBS 301: The Frontier — Blockspace Forum">
+  <meta property="og:description" content="ePBS. Inclusion lists. Preconfirmations. Multi-party block construction. PEPC. The research shaping Ethereum's next chapter.">
+  <meta property="og:image" content="https://blockspace.forum/assets/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@blockspaceforum">
+  <meta name="twitter:title" content="PBS 301: The Frontier — Blockspace Forum">
+  <meta name="twitter:description" content="ePBS. Inclusion lists. Preconfirmations. Multi-party block construction. PEPC. The research shaping Ethereum's next chapter.">
+  <meta name="twitter:image" content="https://blockspace.forum/assets/og-image.png">
+  <meta name="description" content="ePBS. Inclusion lists. Preconfirmations. Multi-party block construction. PEPC. The research shaping Ethereum's next chapter.">
+  <link rel="canonical" href="https://blockspace.forum/generated/learn/pbs-301.html">
+  <link rel="icon" href="../../assets/favicon.ico">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../../css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "PBS 301: The Frontier",
+    "description": "ePBS. Inclusion lists. Preconfirmations. Multi-party block construction. PEPC. The research shaping Ethereum's next chapter.",
+    "author": {
+      "@type": "Organization",
+      "name": "Blockspace Forum",
+      "url": "https://blockspace.forum"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Blockspace Forum",
+      "url": "https://blockspace.forum"
+    },
+    "mainEntityOfPage": "https://blockspace.forum/generated/learn/pbs-301.html",
+    "isPartOf": {
+      "@type": "CreativeWork",
+      "name": "PBS Learning Series"
+    }
+  }
+  </script>
+</head>
+<body data-base="../../">
+  <nav id="site-nav"></nav>
+
+  <main class="container container--narrow">
+    <article>
+      <header class="post-header">
+        <div class="post-meta">PBS 301</div>
+        <h1>The Frontier</h1>
+        <p class="post-subtitle">ePBS. Inclusion lists. Preconfirmations. Multi-party block construction. PEPC. The research shaping Ethereum's next chapter.</p>
+      </header>
+
+      <div class="post-content">
+        <h2>Where the Pipeline Falls Short</h2>
+<p>The PBS pipeline described in 201 works. Over 90% of Ethereum blocks flow through it. But three years of production have surfaced structural limitations across four categories. The <a href="series/structural-gaps.html">Blockspace Forum series</a> covers each in depth:</p>
+<ol>
+<li>
+<p><strong>Economics.</strong> Originators are incentivized to send transactions exclusively to a single builder, because broadcasting to multiple builders causes priority fees to get competed away in the relay auction. As a result, builders construct blocks from partial views, blockspace goes underutilized, and relays struggle to sustain themselves despite performing critical infrastructure functions.</p>
+</li>
+<li>
+<p><strong>Robustness.</strong> Winner-take-most dynamics shrink the active builder and relay set, raising correlated failure risk from implementation monocultures, shared infrastructure, and jurisdictional pressure. The out-of-protocol pipeline does not match Ethereum&rsquo;s own decentralization guarantees.</p>
+</li>
+<li>
+<p><strong>Performance.</strong> No explicit queuing, scheduling, or deadline mechanisms exist along the hot path. Tail latency is high. Users overpay to hedge uncertainty. The 12-second slot creates a structural UX gap compared to chains with faster block times.</p>
+</li>
+<li>
+<p><strong>Services.</strong> Validators gave up control of their blocks when they adopted the block auction. They cannot require specific transactions to be included. They cannot make commitments to users. Preconfirmations and other services require bilateral integration with every builder and relay, creating a cold-start problem.</p>
+</li>
+</ol>
+<p>The research directions below address different pieces of this problem. Some require protocol changes. Others work within the existing pipeline. They are not mutually exclusive; in many cases they reinforce each other.</p>
+<h2>Enshrined PBS (ePBS)</h2>
+<p>Today&rsquo;s block auction runs entirely outside the Ethereum protocol. <strong>Enshrined PBS</strong> (proposed in <a href="https://eips.ethereum.org/EIPS/eip-7732">EIP-7732</a>) would bring the core auction mechanism into the consensus layer itself.</p>
+<p>The key change is <strong>unconditional payment</strong>. In the current system, if something goes wrong in the relay handoff, the proposer can lose their slot and earn nothing. In ePBS, the protocol guarantees the proposer receives the builder&rsquo;s bid regardless of whether the builder reveals the block contents. A new group of validators called the <strong>Payload Timeliness Committee (PTC)</strong> observes whether the builder&rsquo;s payload arrives on time and attests accordingly. This replaces the relay&rsquo;s escrow role with protocol-level enforcement.</p>
+<video class="learn-video" autoplay loop muted playsinline>
+<source src="../../assets/learn/epbs-flow.mp4" type="video/mp4">
+</video>
+
+<p>It is worth noting that some form of unconditional payment is already approximated today through <strong>optimistic relaying</strong>. In this model, the relay holds collateral on behalf of builders and can compensate the proposer if a builder submits an invalid block. ePBS replaces this with a protocol-level guarantee.</p>
+<p>What ePBS changes:</p>
+<ul>
+<li>The block auction moves in-protocol. Builders submit bids through a gossip subnet visible to all participants.</li>
+<li>Fair exchange is enforced by the protocol, not by relay infrastructure.</li>
+<li>Proposers are protected from invalid blocks without relying on relay simulation.</li>
+</ul>
+<p>What ePBS does not solve:</p>
+<ul>
+<li><strong>Builder concentration.</strong> The exclusive order flow dynamic that concentrates building among a few entities is an economic problem, not a structural one. ePBS removes relays from the critical path but does not necessarily fix who wins the auction. It could shift dynamics by changing the auction format, but does not guarantee a more competitive auction. The <a href="series/economics.html">Align the Incentives</a> post explores this dynamic in depth.</li>
+<li><strong>Relays may persist.</strong> Even after ePBS, relays can offer valuable services beyond block escrow: bid cancellation management, bid aggregation, and more sophisticated coordination like multi-party block construction (covered below). The relay role narrows from a critical intermediary to an optional service provider.</li>
+</ul>
+<p>Enshrining the auction into the protocol also raises a question: if the consensus layer absorbs relay functionality, does the sidecar layer become unnecessary? The answer is no. Sidecars remain valuable precisely because it is easier and more efficient to coordinate and experiment out-of-protocol. Different validators have different needs: some want to offer preconfirmations, others want to enforce inclusion constraints, others want to delegate duties to specialized operators. Addressing these at the sidecar level avoids requiring hard forks or adding complexity to security-critical consensus clients. The protocol enshrines the minimum viable mechanism. Everything above that stays in the sidecar.</p>
+<p>ePBS is the foundation. It moves the core block auction into the protocol. But the pipeline&rsquo;s other limitations require additional mechanisms.</p>
+<h2>Inclusion Lists (FOCIL)</h2>
+<p>If builders control what goes into blocks, who ensures that censored transactions still get through?</p>
+<p><a href="https://eips.ethereum.org/EIPS/eip-7805">FOCIL</a> (<strong>Fo</strong>rk-<strong>c</strong>hoice enforced <strong>I</strong>nclusion <strong>L</strong>ists, proposed in EIP-7805) is a committee-based mechanism that guarantees transaction inclusion regardless of what builders prefer.</p>
+<p>In each slot, a set of validators is selected as an <strong>inclusion list (IL) committee</strong>. Each committee member observes their local view of the mempool and builds an inclusion list: a set of transactions they believe should be in the next block. They gossip these lists to the network.</p>
+<p>The proposer (or builder, if the block is not built locally) must include transactions from all collected ILs when constructing the block. The enforcement happens through the fork-choice rule: <strong>attesters only vote for a block if it includes transactions from all the ILs they have seen.</strong> A block that ignores the inclusion lists will not gather enough attestations to become canonical.</p>
+<p>This serves as a <strong>censorship-resistance backstop for the protocol</strong>. Even if every builder in the market wants to exclude a particular transaction, the IL committee guarantees it a path into the chain. Builders remain free to order transactions however they like and include whatever additional transactions they want. FOCIL only ensures that no transaction can be permanently excluded.</p>
+<p>FOCIL is complementary to ePBS. Where ePBS addresses the structure of the auction, FOCIL addresses the censorship risk that comes with builder concentration: it gives the network a way to override builder preferences when inclusion guarantees require it.</p>
+<h2>Relay Inclusion Lists</h2>
+<p>FOCIL requires a protocol-level change (a hard fork). But the same idea can be approximated today, without any changes to Ethereum&rsquo;s consensus rules.</p>
+<p><a href="https://ethresear.ch/t/relay-inclusion-lists/22218">Relay inclusion lists</a> are an out-of-protocol mechanism where relays enforce inclusion constraints on builder blocks before forwarding them to proposers. The relay maintains a list of transactions that should be included. When a builder submits a block, the relay checks whether those transactions are present. If not, the relay can reject the block or, in conjunction with multi-party block construction, inject the missing transactions itself.</p>
+<p>This works within the existing block auction pipeline. No hard fork, no new consensus roles. Relays already validate builder blocks before forwarding them; adding an inclusion check is a natural extension of that responsibility.</p>
+<p>A related mechanism, <a href="https://ethresear.ch/t/block-constraints-sharing-multi-relay-inclusion-lists-beyond/22752">multi-relay inclusion lists</a>, extends this by sharing constraints across relay instances, improving enforcement coverage and reducing single-relay dependence.</p>
+<p>Relay inclusion lists are not a substitute for FOCIL. They depend on relay adoption, which is centralized. But they provide a practical bridge: censorship-resistance improvements that can ship today while the protocol-level solution is developed.</p>
+<h2>Preconfirmations</h2>
+<p>Today, when you send a transaction, you wait up to 12 seconds (one full slot) for it to appear in a block. In practice, with mempool propagation and builder auction timing, it can take longer. For applications that need fast feedback, like trading or gaming, this latency is a barrier.</p>
+<p><strong>Preconfirmations</strong> allow proposers to issue signed commitments to users before the block is finalized. A proposer can promise: &ldquo;your transaction will be included in my block,&rdquo; and back that promise with their stake. The user receives confirmation in milliseconds rather than seconds.</p>
+<p>The mechanism works through the sidecar layer. A proposer running <a href="https://commit-boost.github.io/commit-boost-client/">Commit-Boost</a> can load a preconfirmation module that listens for user requests, evaluates whether the commitment is safe to make, and signs a binding promise using a proxy key. If the proposer fails to honor the commitment, their collateral can be slashed.</p>
+<p>For solo validators, <strong>delegation</strong> is key. A solo validator does not have the infrastructure to run a preconfirmation service themselves. But they can delegate preconf duties to a specialized gateway operator while retaining ultimate control over their block. The gateway handles the complexity; the validator earns a share of the preconf fees.</p>
+<p>Preconfirmations rely on knowing who the upcoming proposer is. EIP-7917 (Deterministic Proposer Lookahead) provides a reliable schedule so that preconf protocols can identify and interact with the right validator ahead of time.</p>
+<h2>Multi-Party Block Construction</h2>
+<p>In the current pipeline, the auction selects a single winning block and delivers it. If that block does not include certain transactions, those transactions wait for the next slot. Any transaction not known to the winning builder has no path to inclusion in that slot.</p>
+<p><a href="https://ethresear.ch/t/relay-block-merging-boosting-value-censorship-resistance/22592">Multi-party block construction</a> changes this. Instead of a single builder producing the entire block, the operator uses its view of all submissions to merge non-contentious transactions from other builders to the winning block, producing a strictly fuller result and improving censorship resistance by offering a second path to inclusion.</p>
+<video class="learn-video" autoplay loop muted playsinline>
+<source src="../../assets/learn/block-merging.mp4" type="video/mp4">
+</video>
+
+<p>The mechanism works through explicit opt-in. Contributing builders label specific transactions as available for inclusion. The winning builder makes a binary choice: allow or reject merging. If allowed, the operator adds those transactions to the block. The resulting block is guaranteed to be at least as full as the original.</p>
+<p>This has a direct connection to preconfirmations. If a proposer has issued a preconf commitment and the winning builder&rsquo;s block does not include that transaction, the operator can inject it rather than rejecting the entire block. This <strong>bypasses the cold-start problem</strong> for preconfirmation adoption: only a few operators need to support preconfs, rather than requiring every builder to integrate every preconf protocol individually.</p>
+<p>No consensus-layer changes are required. Today, relays are the natural operators for this mechanism, but the design is not permanently tied to relays. As the pipeline evolves, this role can migrate to other infrastructure.</p>
+<h2>Attester-Proposer Separation (APS)</h2>
+<p>In today&rsquo;s Ethereum, every validator both proposes and attests. PBS separated block <em>building</em> from block <em>proposing</em>, but proposing and attesting are still bundled into the same role. <strong><a href="https://ethresear.ch/t/execution-tickets/17944">Attester-Proposer Separation (APS)</a></strong> takes the next step: fully decoupling these two duties.</p>
+<p>Under APS, attesting and proposing become separate roles with separate incentives. Attesters form the decentralized backbone of consensus, voting on block validity and chain head. Proposers become a specialized role focused on block selection and commitment.</p>
+<p>This separation has a key benefit: if proposers are assumed to be sophisticated operators, they can take on responsibilities that are impractical for the average validator today. A sophisticated proposer can run preconfirmation services directly, evaluate complex builder bids, and manage commitment protocols without delegation overhead. The barrier to offering these services drops because the proposer role is designed for entities that can handle the complexity.</p>
+<p>More importantly, APS reduces the centralizing effects of bid variance on the validator set. Today, block auction revenue flows to proposers, creating variance that pushes solo stakers toward pools (as we covered in PBS 201). Under APS, what matters for network security is that <em>attesting</em> remains decentralized. The proposer role can tolerate more concentration without threatening consensus, because attesters, not proposers, are the ones securing the chain.</p>
+<h2>In-Protocol Delegation</h2>
+<p>One persistent challenge with proposer commitments is enforcement. A proposer always has the final say in block construction. Even if they have committed to proposing a builder&rsquo;s block, they could choose not to, accepting the penalty if it is cheaper than honoring the commitment.</p>
+<p>Today, this is handled through out-of-protocol mechanisms: extra collateral requirements, slashing via external protocols, and reputation systems. These create barriers to entry for proposers and introduce risk. A solo validator who wants to participate in commitment protocols needs to post additional collateral and rely on external slashing infrastructure, which pushes them toward pools or delegation services.</p>
+<p><strong>In-protocol delegation</strong> would simplify this by allowing proposers to delegate their block production rights directly within the consensus rules. The delegate, not the proposer, would be responsible for fulfilling commitments, and the protocol itself would enforce the delegation. The proposer is no longer a source of risk because they have credibly handed off control.</p>
+<p>This removes the need for extra collateral and out-of-protocol slashing mechanisms. It lowers the barrier for proposers to participate in commitment markets and makes the system more accessible for smaller operators who want to earn from commitment protocols without taking on the infrastructure and risk burden themselves.</p>
+<p>In-protocol delegation can be thought of as a baby step toward APS. Both move in the same direction: separating who has the right to propose from who actually builds and commits. Delegation does it optionally, within the current validator model. APS does it structurally, as a protocol-level role split.</p>
+<h2>PEPC: The Generalization</h2>
+<p>Each mechanism above addresses a specific limitation: ePBS enshrines the auction, FOCIL prevents censorship, preconfirmations improve latency, merging increases block fullness. But they share a common thread: they all involve proposers making commitments about their blocks.</p>
+<p><strong><a href="https://ethresear.ch/t/unbundling-pbs-towards-protocol-enforced-proposer-commitments-pepc/13879">Protocol-Enforced Proposer Commitments (PEPC)</a></strong> generalizes this into a single framework. Rather than enshrining each commitment type separately, PEPC provides general-purpose infrastructure for proposers to enter into arbitrary commitments with third parties, enforced by the protocol.</p>
+<p>In this framing:</p>
+<ul>
+<li>ePBS is a specific PEPC instance: &ldquo;I commit to proposing this builder&rsquo;s block.&rdquo;</li>
+<li>Inclusion lists are a PEPC instance: &ldquo;I commit to including these transactions.&rdquo;</li>
+<li>Preconfirmations are a PEPC instance: &ldquo;I commit to including this user&rsquo;s transaction.&rdquo;</li>
+</ul>
+<p>PEPC is a long-term research direction, not something shipping soon. But it provides the conceptual unification. And the practical bridge exists today: <a href="https://commit-boost.github.io/commit-boost-client/">Commit-Boost</a> enables validators to make proposer commitments through a standardized sidecar interface. The commitment types that Commit-Boost supports now will inform which PEPC variants are worth enshrining in the protocol.</p>
+<h2>The Work Ahead</h2>
+<p>These research directions are not independent. They interact, sometimes reinforcing each other, sometimes creating tension. ePBS and FOCIL are designed as companions. Relay inclusion lists and multi-party block construction complement each other. Preconfirmations need both a sidecar framework and a fulfillment mechanism.</p>
+<p>The Blockspace Forum exists to map these interactions, identify the most impactful paths, and ship the infrastructure that makes them real.</p>
+      </div>
+
+      <nav class="learn-nav">
+        <a href="pbs-201.html" class="learn-nav-prev">&larr; PBS 201: The Pipeline</a>
+        
+      </nav>
+    </article>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="../../generated/config.js"></script>
+  <script src="../../js/main.js"></script>
+</body>
+</html>

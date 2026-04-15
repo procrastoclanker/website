@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wait — Blockspace Forum</title>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Wait — Blockspace Forum">
+  <meta property="og:description" content="Performance bottlenecks in the block construction pipeline">
+  <meta property="og:image" content="https://blockspace.forum/assets/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@blockspaceforum">
+  <meta name="twitter:title" content="Wait — Blockspace Forum">
+  <meta name="twitter:description" content="Performance bottlenecks in the block construction pipeline">
+  <meta name="twitter:image" content="https://blockspace.forum/assets/og-image.png">
+  <meta name="description" content="Performance bottlenecks in the block construction pipeline">
+  <link rel="canonical" href="https://blockspace.forum/generated/learn/series/performance.html">
+  <link rel="icon" href="../../../assets/favicon.ico">
+  <link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../../../css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Wait",
+    "description": "Performance bottlenecks in the block construction pipeline",
+    "datePublished": "March 20, 2026",
+    "author": {
+      "@type": "Organization",
+      "name": "Blockspace Forum",
+      "url": "https://blockspace.forum"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Blockspace Forum",
+      "url": "https://blockspace.forum"
+    },
+    "mainEntityOfPage": "https://blockspace.forum/generated/learn/series/performance.html"
+  }
+  </script>
+</head>
+<body data-base="../../../">
+  <nav id="site-nav"></nav>
+
+  <main class="container">
+    <div class="post-header">
+      <div class="post-meta">Part 7 · March 20, 2026 · <a href="https://x.com/blockspaceforum/status/2034999394555003080" target="_blank" rel="noopener">Original thread</a></div>
+      <h1>Wait</h1>
+      <div class="post-subtitle">Performance bottlenecks in the block construction pipeline</div>
+    </div>
+
+    <div class="post-content">
+      <p>The most valuable millisecond in Ethereum&rsquo;s block construction is the last one.</p>
+<p>As each slot progresses, new transactions arrive, market conditions shift, and the information available to builders changes. Builders delay bids to capture more information. Validators delay header requests to capture higher-value bids. Users overbid because they can&rsquo;t predict when they&rsquo;ll land. Builders time their bids to be most competitive just before the proposer requests them.</p>
+<p>Every participant in the pipeline faces the same incentive: wait.</p>
+<figure><img alt="Bid value evolution over time during a slot" src="https://pbs.twimg.com/media/HD3DzfSWAAASX1h?format=png&amp;name=large"><figcaption>Bid value (vs maximum bid value) evolution over time during a slot. Source: Natale &amp; Moser (2023) - <a href="https://arxiv.org/abs/2312.09654">arxiv.org/abs/2312.09654</a></figcaption></figure>
+<p>We&rsquo;ve examined how the pipeline shapes economics and creates fragility. Performance is where these forces become measurable.</p>
+<p>For the transaction pipeline, we believe three metrics can be used to help determine how well the system serves Ethereum: block value, capacity management, and time-to-inclusion. In plain terms, blockspace needs to be filled to capacity, fast, and predictably.</p>
+<h2>Block Value</h2>
+<p>Block value measures how much of a block&rsquo;s potential is actually captured. When the auction works well, builders compete to bid competitively, and that value is distributed to proposers through competitive bidding. Builders, relays, and originators all take a share along the way. When competition narrows, less of that value reaches the proposer.</p>
+<p><a href="https://x.com/blockspaceforum/status/2027037604332384379">We&rsquo;ve covered the mechanics driving this in our economics thread</a>: exclusive order flow concentrates building power, shrinking the competitive field. Fewer builders competing means less pressure to bid competitively. Relay bid adjustments siphon additional value between builder and proposer. The result is blocks that leave fees on the table and users who pay more than they should.</p>
+<p>The effect is visible during periods of market stress, when the incentive to keep blocks lean and submit late is strongest:</p>
+<figure><img alt="Block value during market stress periods" src="https://pbs.twimg.com/media/HD3ECQHboAMVJkN?format=png&amp;name=large"><figcaption>Data provided by Gattaca (2025)</figcaption></figure>
+<p>The concentration is measurable. Today, 2-3 builders construct roughly 80% of blocks. The auction isn&rsquo;t selecting for the best block; it&rsquo;s selecting for the best-connected builder. That gap between potential and realized block value is the first efficiency cost the pipeline imposes on Ethereum.</p>
+<h2>Capacity Management</h2>
+<p>Blocks should be full. They often aren&rsquo;t&hellip; even when they could be.</p>
+<p>Builders have every incentive to keep blocks lean and submit as late as possible. The information available for block construction changes throughout the slot, new transactions entering the mempool, shifting prices, evolving arbitrage opportunities. A builder who waits a few hundred extra milliseconds can construct a meaningfully more profitable block. When prices are volatile, the rational strategy for any individual builder <a href="https://arxiv.org/abs/2312.09654">works against the network&rsquo;s interest in filling every block to capacity</a>.</p>
+<p>Blobs compound this. Each blob adds to the physical size of a block. Larger blocks take longer to travel across the network, and validators that haven&rsquo;t received the block in time attest to the previous one instead. More blobs means more data to propagate within the same timing window, while the same incentives pull builders and validators toward publishing later.</p>
+<p>The <a href="https://ethpandaops.io/posts/fusaka-more-blobs-less-votes/">ethPandaOps Fusaka analysis</a> makes this tension visible. After Fusaka increased blob limits, attestation head votes began dropping as blob count rose. More data per block, fewer validators confirming it on time. At first glance, this looks like a scaling ceiling.</p>
+<p>Segment the data by timing behavior, and the picture changes. Conservative entities that publish blocks promptly maintain roughly 99% head votes even at maximum blob counts. Entities operating at the margins of the timing window drive almost all of the degradation. The network can handle the data. The problem is when it arrives.</p>
+<figure><img alt="ethPandaOps Fusaka blob analysis" src="https://pbs.twimg.com/media/HD3EJl1WkAAY7yI?format=png&amp;name=large"><figcaption>Source: <a href="https://ethpandaops.io/">ethpandaops.io</a></figcaption></figure>
+<p>Fusaka didn&rsquo;t create this dynamic. It amplified it. More data to propagate in the same window, with the same incentives pulling in the opposite direction.</p>
+<p>And the pressure only grows. Under the zkEVM, execution payloads need to reach provers quickly so they have time to generate validity proofs. If blocks continue to arrive at the margins of the timing window, proof generation time shrinks. The same dynamic that undermines attestation today will constrain Ethereum&rsquo;s ability to scale tomorrow.</p>
+<h2>Time-to-Inclusion</h2>
+<p>Wait&hellip; so when will my transaction land? For most users, the honest answer is: nobody knows.</p>
+<p>No public cutoff exists for transaction submission. Network latency varies unpredictably. Users bear this uncertainty directly, <a href="https://arxiv.org/abs/2201.05574">overbidding defensively when conditions are volatile</a> to avoid waiting through additional blocks.</p>
+<div class="stat-callout"><div class="stat-number">~5%</div><div class="stat-text">additional weekly value captured by validators who strategically delay header requests. Solo stakers can't play this game.</div></div>
+
+<p>Exploiting that uncertainty is rational. In the PBS auction, validators choose when to request a block header from relays. The later the request, the longer builders have to compete, and the higher the winning bid. Validators that strategically delay <a href="https://arxiv.org/abs/2312.09654">capture roughly 5% additional value weekly</a>. The tradeoff: wait too long and risk missing the slot entirely.</p>
+<p>The costs don&rsquo;t stop with the proposer. Later bids consume more gas, inflating the base fee and burn rate for subsequent proposers. And the longer the auction runs, the more time for off-chain prices to move while on-chain prices remain stale. Liquidity providers bear this cost directly; traders exploit the price divergence, and arbitrage losses grow with every additional millisecond of delay.</p>
+<figure><img alt="Burnt ETH increase as function of bid timing" src="https://pbs.twimg.com/media/HD3ESVsacAAKBZ3?format=png&amp;name=large"><figcaption>Burnt ETH increase for the subsequent block as a function of the eligibility of the bid (left) and bid value increase (right). Source: Natale &amp; Moser (2023) - <a href="https://arxiv.org/abs/2312.09654">arxiv.org/abs/2312.09654</a></figcaption></figure>
+<p>Some proposers see the auction play out for over a second. Others see a fraction of it. The information gap between them compounds every other dynamic in the pipeline.</p>
+<p>Large validators propose blocks frequently enough that the variance evens out. They accumulate data across thousands of proposals, refining their timing calibration with each one. Their risk is manageable, their returns predictable.</p>
+<figure><img alt="Expected weekly block value increase by voting power" src="https://pbs.twimg.com/media/HD3EdL4boAYVkVi?format=png&amp;name=large"><figcaption>Expected weekly block value increase by voting power. Source: Natale &amp; Moser (2023)</figcaption></figure>
+<p>Solo stakers propose rarely, perhaps once every few months. Each proposal carries outsized variance, and they lack the data to optimize their timing. The pipeline punishes them for a game they can&rsquo;t play.</p>
+<p>Ethereum was designed to empower solo stakers, and yet solo stakers absorb the most cost from a dynamic they can&rsquo;t competitively exploit? There has to be a better way.</p>
+<h2>The Common Thread</h2>
+<p>Underutilized blocks, unpredictable inclusion, escalating costs. These look like separate problems. They trace to the same force.</p>
+<p>The pipeline incentivizes waiting. Builders wait for more information. Validators wait for higher bids. Users wait because they have no choice. Every participant optimizes their own timing, and the network pays for the collective delay.</p>
+<p>Latency is an unavoidable consequence of decentralization; information takes time to propagate across a global network, and that&rsquo;s a physical constraint. Variance is different. A full second of spread between median and 95th percentile bid timing isn&rsquo;t a network constraint. It&rsquo;s the pipeline rewarding participants who can afford to optimize at the expense of those who can&rsquo;t.</p>
+<p>However, we know small adjustments to the pipeline can address meaningful amounts of this variance, without requiring participants to act against their own interests. With these changes, you can wait all you want with the impact being minimal on the network, its users, and its decentralized validator set.</p>
+<p>Wait&hellip;</p>
+    </div>
+
+    <div class="post-nav" id="post-nav"></div>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="../../../generated/config.js"></script>
+  <script src="../../../js/main.js"></script>
+  <script>renderPostNav('performance');</script>
+</body>
+</html>

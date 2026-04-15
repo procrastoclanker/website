@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keep Ethereum's Validator Set Decentralized — Blockspace Forum</title>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Keep Ethereum's Validator Set Decentralized — Blockspace Forum">
+  <meta property="og:description" content="How PBS preserved validator decentralization">
+  <meta property="og:image" content="https://blockspace.forum/assets/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@blockspaceforum">
+  <meta name="twitter:title" content="Keep Ethereum's Validator Set Decentralized — Blockspace Forum">
+  <meta name="twitter:description" content="How PBS preserved validator decentralization">
+  <meta name="twitter:image" content="https://blockspace.forum/assets/og-image.png">
+  <meta name="description" content="How PBS preserved validator decentralization">
+  <link rel="canonical" href="https://blockspace.forum/generated/learn/series/keep-validators-decentralized.html">
+  <link rel="icon" href="../../../assets/favicon.ico">
+  <link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../../../css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Keep Ethereum's Validator Set Decentralized",
+    "description": "How PBS preserved validator decentralization",
+    "datePublished": "February 19, 2026",
+    "author": {
+      "@type": "Organization",
+      "name": "Blockspace Forum",
+      "url": "https://blockspace.forum"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Blockspace Forum",
+      "url": "https://blockspace.forum"
+    },
+    "mainEntityOfPage": "https://blockspace.forum/generated/learn/series/keep-validators-decentralized.html"
+  }
+  </script>
+</head>
+<body data-base="../../../">
+  <nav id="site-nav"></nav>
+
+  <main class="container">
+    <div class="post-header">
+      <div class="post-meta">Part 3 · February 19, 2026 · <a href="https://x.com/blockspaceforum/status/2024509838445990029" target="_blank" rel="noopener">Original thread</a></div>
+      <h1>Keep Ethereum's Validator Set Decentralized</h1>
+      <div class="post-subtitle">How PBS preserved validator decentralization</div>
+    </div>
+
+    <div class="post-content">
+      <p>Last time we left off with Ethereum facing a fork in the road: embrace validator sophistication or develop a mechanism that allowed all validators to remain &ldquo;unsophisticated&rdquo; without losing out on ordering revenue.</p>
+<p>In 2019, <a href="https://arxiv.org/abs/1904.05234">Flash Boys 2.0</a> defined the problem and documented its scope.</p>
+<p>The community and researchers realized that something needed to be shipped and infrastructure built to help mitigate its impact.</p>
+<p>The key insight observed and proposed: if we separate the building or stuffing of blocks from proposing blocks, all proposers are able to tap into the same building sophistication, whether or not they are able to implement it themselves.</p>
+<p>The approach worked. The network got cleaner, and a system referred to as Proposer-Builder Separation (PBS) began to flourish.</p>
+<p><img alt="PBS architecture diagram" src="https://pbs.twimg.com/media/HBiAah2bUAIKvub?format=jpg&amp;name=large"></p>
+<p>Then came the Merge 🐼.</p>
+<p>Flashbots shipped MEV-Boost, a sidecar that lets validators outsource block construction to specialized builders through relays. This continued Proposer-Builder Separation in practice. Validators stayed lightweight. Builders competed to construct the most valuable blocks. Relays facilitated the auction of blockspace between builders and validators.</p>
+<p>Adoption was immediate. Within 60 days of the Merge, over 90% of validators had connected to the PBS infrastructure. Today, more than 90% of Ethereum transactions flow through these rails.</p>
+<p>The numbers continue to tell the story. Over the past three years, PBS has processed billions of transactions, including trillions in DEX and stablecoin volume. A million validators now secure the chain, with nearly all using the PBS transaction rails. The current transaction rails were a success bolted onto the infrastructure of post-Merge Ethereum.</p>
+<p>They saw a problem, built a solution, and shipped it. However, over the last few years, not much has shifted. ePBS, which does change the transaction rails, is coming, but structural gaps will likely remain that we all should continue to push to address!</p>
+<p>Till the next block&hellip;</p>
+    </div>
+
+    <div class="post-nav" id="post-nav"></div>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="../../../generated/config.js"></script>
+  <script src="../../../js/main.js"></script>
+  <script>renderPostNav('keep-validators-decentralized');</script>
+</body>
+</html>

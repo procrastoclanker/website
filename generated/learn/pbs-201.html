@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PBS 201: The Pipeline — Blockspace Forum</title>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="PBS 201: The Pipeline — Blockspace Forum">
+  <meta property="og:description" content="Sidecars, the block auction, timing games, and the road to proposer agency.">
+  <meta property="og:image" content="https://blockspace.forum/assets/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@blockspaceforum">
+  <meta name="twitter:title" content="PBS 201: The Pipeline — Blockspace Forum">
+  <meta name="twitter:description" content="Sidecars, the block auction, timing games, and the road to proposer agency.">
+  <meta name="twitter:image" content="https://blockspace.forum/assets/og-image.png">
+  <meta name="description" content="Sidecars, the block auction, timing games, and the road to proposer agency.">
+  <link rel="canonical" href="https://blockspace.forum/generated/learn/pbs-201.html">
+  <link rel="icon" href="../../assets/favicon.ico">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../../css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "PBS 201: The Pipeline",
+    "description": "Sidecars, the block auction, timing games, and the road to proposer agency.",
+    "author": {
+      "@type": "Organization",
+      "name": "Blockspace Forum",
+      "url": "https://blockspace.forum"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Blockspace Forum",
+      "url": "https://blockspace.forum"
+    },
+    "mainEntityOfPage": "https://blockspace.forum/generated/learn/pbs-201.html",
+    "isPartOf": {
+      "@type": "CreativeWork",
+      "name": "PBS Learning Series"
+    }
+  }
+  </script>
+</head>
+<body data-base="../../">
+  <nav id="site-nav"></nav>
+
+  <main class="container container--narrow">
+    <article>
+      <header class="post-header">
+        <div class="post-meta">PBS 201</div>
+        <h1>The Pipeline</h1>
+        <p class="post-subtitle">Sidecars, the block auction, timing games, and the road to proposer agency.</p>
+      </header>
+
+      <div class="post-content">
+        <h2>The Transaction Pipeline</h2>
+<p>In PBS 101 we introduced proposer-builder separation and the key participants: validators, builders, searchers, and relays. Here we look at how they connect into an end-to-end pipeline, the out-of-protocol infrastructure that turns a transaction into a block.</p>
+<p>The chain runs: Users -&gt; Private RPCs -&gt; OFAs -&gt; Searchers -&gt; Builders -&gt; Relays -&gt; Proposers.</p>
+<p>When you send a transaction, your wallet routes it through a <strong>private RPC</strong> for privacy rather than broadcasting it to the public mempool. The private RPC forwards it to an <strong>order flow auction (OFA)</strong>, which runs a competitive auction among searchers for the right to interact with your transaction, returning a share of the auction proceeds back to you. The winning <strong>searchers</strong> bundle your transaction with others and send the result to <strong>builders</strong>, who assemble a complete block. Builders submit their blocks to <strong>relays</strong>, which run an open auction on behalf of <strong>proposers</strong>. The proposer selects the highest bid, signs a commitment, and the block becomes part of the chain.</p>
+<p>This pipeline is not part of the Ethereum protocol. It runs entirely out-of-protocol.</p>
+<video class="learn-video" autoplay loop muted playsinline>
+<source src="../../assets/learn/wallet-to-block.mp4" type="video/mp4">
+</video>
+
+<h2>Sidecars</h2>
+<p>Consensus clients (Lighthouse, Prysm, Teku, Nimbus, Lodestar) are responsible for Ethereum&rsquo;s core safety: proposing blocks, attesting, and enforcing fork-choice rules. These codebases need to stay focused and conservative. Every new feature adds risk.</p>
+<p>But validators increasingly need to interact with services outside the protocol: block auctions, commitment protocols, key management systems. Rather than embedding all of this into the consensus client, the work is pushed to a <strong>sidecar</strong>: middleware that runs alongside the consensus client, extending what a validator can do without modifying the client itself.</p>
+<p><a href="https://github.com/flashbots/mev-boost">MEV-Boost</a>, built by Flashbots and shipped alongside Ethereum&rsquo;s transition to proof of stake in September 2022, was the first sidecar. Within 60 days of the Merge, over 90% of validators had adopted it. Today, more than 90% of Ethereum blocks flow through this PBS framework.</p>
+<p>Here is how the sidecar mediates the block auction during a slot:</p>
+<ol>
+<li>Builders submit their blocks to relays throughout the slot.</li>
+<li>When the consensus client needs a block, it calls the sidecar.</li>
+<li>The sidecar queries all its registered relays for their current best bid.</li>
+<li>Each relay responds with a block header and a bid amount.</li>
+<li>The sidecar selects the highest bid and returns that header to the consensus client.</li>
+<li>The consensus client signs the header (committing to the block) and broadcasts it.</li>
+<li>The relay sees the signed commitment and releases the full block to the network.</li>
+</ol>
+<p>The validator never sees the block contents before signing. They see the bid amount and the block header, but not the transactions inside. The consensus client does not know or care that its blocks come from a relay auction rather than local construction. It just asks for a block and gets one.</p>
+<h2>The Proposer&rsquo;s Problem</h2>
+<p>The current pipeline works, but it came with a fundamental tradeoff: <strong>proposers gave up all agency over their blocks.</strong></p>
+<p>Before PBS, validators built their own blocks. They chose which transactions to include, in what order. They had full control. After adopting the block auction, validators became price-takers. They see a bid amount and a header, sign it, and move on. They cannot inspect what is inside. They cannot require that certain transactions be included. They cannot express any preferences about block contents at all.</p>
+<p>For a simple block auction, this is fine. The validator&rsquo;s only goal is to select the highest bid. But as Ethereum evolves, validators may want to do more:</p>
+<ul>
+<li><strong>Inclusion preferences.</strong> A proposer might want to ensure that certain transactions are included in their block, even if a builder would prefer to exclude them. This is a censorship-resistance mechanism.</li>
+<li><strong>Preconfirmations.</strong> A proposer could issue a signed promise to a user that their transaction will be included in the next block, reducing effective confirmation time from 12 seconds to milliseconds.</li>
+<li><strong>Constraints on builders.</strong> A proposer might accept a builder&rsquo;s block only if it meets certain criteria, like including an inclusion list or respecting a particular transaction ordering.</li>
+<li><strong>Delegated services.</strong> A proposer could delegate specific duties (like issuing preconfirmations) to a specialized operator, while retaining ultimate control over the block.</li>
+</ul>
+<p>None of these are possible with the current auction software. It gives the proposer exactly one choice: which bid to accept. Everything else is the builder&rsquo;s decision.</p>
+<p>This is the proposer agency problem, and it is what motivated the next generation of sidecar infrastructure.</p>
+<h2>Commit-Boost: A Sidecar for Proposer Commitments</h2>
+<p><a href="https://commit-boost.github.io/commit-boost-client/">Commit-Boost</a> extends the sidecar pattern into a modular framework, already adopted by above 40% of validators as their PBS sidecar. Instead of a single-purpose sidecar that only runs block auctions, Commit-Boost makes each proposer service a pluggable module.</p>
+<p>The core idea: validators should be able to make commitments, not just accept bids.</p>
+<p>Commit-Boost has three layers:</p>
+<p><strong>PBS module.</strong> This replaces MEV-Boost for relay interaction. It speaks the same Builder API that consensus clients already use, so from the client&rsquo;s perspective, switching from MEV-Boost to Commit-Boost is seamless. The PBS module handles relay registration, header requests, and payload retrieval.</p>
+<p><strong>Signer module.</strong> This manages all signing operations with strict isolation. Modules never hold validator keys directly. When a commitment module needs a signature (for example, to sign a preconfirmation promise), it sends a request to the signer module, which enforces policy. The signer can restrict which message types each module is authorized to sign, preventing a buggy preconfirmation module from accidentally producing a block proposal signature that could cause slashing.</p>
+<p>For commitment protocols that require additional collateral, Commit-Boost supports <strong>proxy keys</strong>: BLS keys derived from the validator&rsquo;s master key. Commitment protocols see a valid identity, but compromise of a proxy key does not endanger the validator&rsquo;s 32 ETH stake.</p>
+<p><strong>Module system.</strong> Developers write commitment modules as Docker containers that communicate with Commit-Boost through its API. Each module runs in its own isolated container. A preconfirmation module cannot read the PBS module&rsquo;s relay credentials or access validator keys. This isolation is the security boundary.</p>
+<p>The architecture means that new proposer services can plug in without validators deploying additional sidecars. One sidecar, one configuration, multiple commitment protocols.</p>
+<h2>The Auction in Detail</h2>
+<p>The block auction is not a single moment. It is a continuous process that runs throughout the slot.</p>
+<p>At the start of a slot, builders begin constructing blocks. As new transactions arrive in private channels and the mempool, builders update their blocks and resubmit to relays with higher bids. The relay tracks the current best bid from each builder.</p>
+<p>Builders can see the top bid at any relay they are connected to. This makes the auction competitive and transparent among builders. A builder trailing the current leader can choose to bid higher, optimize their block, or concede the slot.</p>
+<p>The proposer does not commit immediately. They wait as long as they safely can before requesting the current best bid from relays. The later they wait, the higher the bid tends to be, because builders have had more time to discover transactions and build more optimized blocks.</p>
+<p>This creates a tension called <strong>timing games</strong>. Waiting longer optimizes the block, but it also leaves less time for the block to propagate across the network. If the block arrives too late, attesters may not see it in time, and the proposer risks missing their slot entirely.</p>
+<p>In practice, most blocks arrive well before the 4-second mark. Ethereum&rsquo;s consensus rules treat that point as a soft deadline: blocks arriving after it are increasingly likely to be reorged as attesters may not see them in time. This creates a natural boundary on how long proposers can safely delay.</p>
+<video class="learn-video" autoplay loop muted playsinline>
+<source src="../../assets/learn/timing-games.mp4" type="video/mp4">
+</video>
+
+<p>Timing games are not equally accessible to all validators. Large staking operations with fast network connections and relay co-location can push the deadline further than solo validators running from home. This is one of the ways the current pipeline creates subtle centralization pressure on the validator set. The performance dynamics of the auction are explored in detail in our <a href="series/performance.html">Wait</a> post.</p>
+<h2>Optimistic Relaying</h2>
+<p>In the standard relay flow described above, the relay fully validates every builder block before forwarding the bid to the proposer. This means simulating execution to confirm the block is valid and pays the claimed bid. Simulation is expensive and adds latency to the pipeline.</p>
+<p><strong>Optimistic relaying</strong> relaxes this requirement. Instead of validating every block upfront, the relay forwards the builder&rsquo;s bid to the proposer immediately and validates the block in the background (or skips full validation entirely for builders with sufficient collateral). If the block turns out to be invalid, the builder&rsquo;s collateral covers the proposer&rsquo;s loss.</p>
+<p>This tradeoff moves validation cost from the critical path to a collateral-backed guarantee. Builders who want optimistic treatment must post collateral with the relay, effectively putting up a deposit that says: &ldquo;if my block is invalid, pay the proposer from my deposit.&rdquo;</p>
+<p>Optimistic relaying reduces end-to-end latency, which benefits proposers (they get bids faster) and builders (their bids are more likely to arrive before the proposer commits).</p>
+<h2>Market Structure</h2>
+<p>The pipeline&rsquo;s dynamics have evolved significantly over three years of production.</p>
+<p>For a deeper look at these trends, the <a href="series/structural-gaps.html">Blockspace Forum series</a> covers the structural gaps in detail: <a href="series/economics.html">economics</a>, <a href="series/robustness.html">robustness</a>, and <a href="series/performance.html">performance</a>. Community-built <a href="../../index.html#tooling">dashboards and tools</a> provide live data on relay performance, builder activity, and validator behavior.</p>
+<h2>What Comes Next</h2>
+<p>The pipeline you just learned about is what runs today. PBS 301 covers the research directions that aim to address its limitations: enshrined PBS, preconfirmations, inclusion lists, multi-party block construction, and the broader push to give proposers more control over the blocks they produce.</p>
+      </div>
+
+      <nav class="learn-nav">
+        <a href="pbs-101.html" class="learn-nav-prev">&larr; PBS 101: The Basics</a>
+        <a href="pbs-301.html" class="learn-nav-next">PBS 301: The Frontier &rarr;</a>
+      </nav>
+    </article>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="../../generated/config.js"></script>
+  <script src="../../js/main.js"></script>
+</body>
+</html>

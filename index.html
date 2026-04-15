@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forum built to improve the Ethereum transaction journey.</title>
+  <meta name="description" content="Education, research, and open source tooling for the infrastructure that moves Ethereum's transactions. This forum ships.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Forum built to improve the Ethereum transaction journey.">
+  <meta property="og:description" content="Education, research, and open source tooling for the infrastructure that moves Ethereum's transactions. This forum ships.">
+  <meta property="og:image" content="https://blockspace.forum/assets/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@blockspaceforum">
+  <meta name="twitter:title" content="Blockspace Forum">
+  <meta name="twitter:description" content="Education, research, and open source tooling for the infrastructure that moves Ethereum's transactions. This forum ships.">
+  <meta name="twitter:image" content="https://blockspace.forum/assets/og-image.png">
+  <meta name="keywords" content="Ethereum, blockspace, PBS, proposer-builder separation, relay, builder, validator, sidecar, preconfirmations, Commit-Boost, block construction, transaction pipeline">
+  <link rel="icon" href="assets/favicon.ico">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="canonical" href="https://blockspace.forum">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Blockspace Forum",
+    "url": "https://blockspace.forum",
+    "description": "Education, research, and open source tooling for the infrastructure that moves Ethereum's transactions. This forum ships.",
+    "sameAs": [
+      "https://x.com/blockspaceforum",
+      "https://github.com/blockspace-forum",
+      "https://www.youtube.com/@BlockspaceForum"
+    ],
+    "knowsAbout": [
+      "Ethereum blockspace market",
+      "Proposer-Builder Separation",
+            "Block construction pipeline",
+      "Relay and auction infrastructure",
+      "Validator sidecars",
+      "Preconfirmations",
+      "Inclusion lists",
+            "Commit-Boost"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Blockspace Forum",
+    "url": "https://blockspace.forum",
+    "description": "Education, research, and open source tooling for the infrastructure that moves Ethereum's transactions. This forum ships.",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://blockspace.forum/blog.html?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+</head>
+<body data-base="">
+  <nav id="site-nav"></nav>
+
+  <main class="container container--wide">
+    <!-- 1. Hero -->
+    <section class="hero">
+      <div class="hero-hex" id="hero-hex"></div>
+      <h1>Blockspace Forum</h1>
+      <p class="tagline">Forum built to improve the Ethereum transaction journey.</p>
+      <p class="hero-description">Education, research, and open source tooling for the infrastructure that moves Ethereum's transactions. This forum ships.</p>
+      <div class="hero-cta">
+        <a href="https://x.com/blockspaceforum" target="_blank" rel="noopener" class="btn btn-primary">X / Twitter</a>
+        <a href="https://github.com/blockspace-forum" target="_blank" rel="noopener" class="btn btn-outline">GitHub</a>
+      </div>
+    </section>
+
+    <!-- 2. The Resource -->
+    <section class="section-block">
+      <div class="narrative-row">
+        <div class="narrative-text">
+          <span class="section-label">The Resource</span>
+          <h2>Every 12 seconds, Ethereum produces blockspace</h2>
+          <p>Blockspace is scarce, verifiable compute and data inside each block. It's what every transaction, contract call, and L2 settlement competes for. Understanding how it's produced, priced, and allocated is the starting point for understanding Ethereum's infrastructure.</p>
+          <a href="learn.html#intro-to-blockspace" class="btn btn-primary narrative-cta">Start learning<span class="btn-arrow">&rarr;</span></a>
+        </div>
+        <div class="narrative-visual">
+          <canvas id="blockspace-canvas"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. The Pipeline -->
+    <section class="section-block">
+      <div class="narrative-row narrative-row--reverse">
+        <div class="narrative-text">
+          <span class="section-label">The Pipeline</span>
+          <h2>How your transaction becomes a block</h2>
+          <p>Over 90% of Ethereum validators outsource block construction to a specialized pipeline: searchers bundle transactions, builders assemble full blocks, and relays facilitate the auction of blockspace between builders and validators. Each handoff is a design decision with tradeoffs that shape what ends up on chain.</p>
+          <a href="generated/learn/pbs-201.html" class="btn btn-primary narrative-cta">Understand the pipeline<span class="btn-arrow">&rarr;</span></a>
+        </div>
+        <div class="narrative-visual">
+          <canvas id="pipeline-canvas"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. The Gaps -->
+    <section id="focus" class="section-block">
+      <span class="section-label">The Gaps</span>
+      <h2>Three years of production exposed four structural gaps</h2>
+      <div class="focus-grid focus-grid-4">
+        <div class="focus-card">
+          <div class="focus-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          </div>
+          <h3>Economics</h3>
+          <p>Exclusive order flow concentrates block construction among a few builders. The auction selects the best-connected builder, not the best block. Relays lack sustainable revenue, leading to counterproductive workarounds.</p>
+        </div>
+        <div class="focus-card">
+          <div class="focus-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          </div>
+          <h3>Robustness</h3>
+          <p>Winner-take-most dynamics shrink the active builder and relay set, raising correlated failure risk from implementation monocultures, shared infrastructure, and jurisdictional pressure.</p>
+        </div>
+        <div class="focus-card">
+          <div class="focus-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          </div>
+          <h3>Performance</h3>
+          <p>The pipeline lacks scheduling or deadline mechanisms. Users overpay to hedge unpredictable inclusion, and the 12-second slot leaves a UX gap against faster chains.</p>
+        </div>
+        <div class="focus-card">
+          <div class="focus-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+          </div>
+          <h3>Services</h3>
+          <p>Validators forfeited their say in block building and became price takers. There is a desire to restore autonomy but missing rails.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. The Mission -->
+    <section class="section-block">
+      <span class="section-label">The Mission</span>
+      <h2>Forum built to improve the Ethereum transaction journey.</h2>
+      <div class="mission-pillars">
+        <div class="mission-pillar">
+          <h3>Research</h3>
+          <p>Identify the problems precisely and design solutions grounded in mechanism design, game theory, and data. Publish openly so the entire community can scrutinize and build on the work.</p>
+        </div>
+        <div class="mission-pillar">
+          <h3>Ship</h3>
+          <p>Working with the community to ship the open source infrastructure and specs that turns research into production.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. The Work -->
+    <section id="research" class="section-block">
+      <span class="section-label">The Work</span>
+      <h2>Published research</h2>
+      <p class="section-description">Analysis from Blockspace Forum contributors identifying problems and designing solutions.</p>
+      <div id="research-list" class="research-grid"></div>
+      <div class="section-more">
+        <a href="research.html" class="btn btn-outline">View all research &rarr;</a>
+      </div>
+    </section>
+
+    <!-- 7. The Community -->
+    <section class="section-block">
+      <span class="section-label">The Community</span>
+      <h2>How do I get involved?</h2>
+      <p class="section-description">Blockspace Forum is an open community. We meet to share research, build tooling, and push the blockspace pipeline forward. Whether you're a validator operator, protocol researcher, or just getting started, there's a place for you.</p>
+      <div id="community-latest-event"></div>
+      <div class="section-more">
+        <a href="events.html" class="btn btn-outline">See other events &rarr;</a>
+      </div>
+    </section>
+
+        <!-- 6. Tooling -->
+    <section id="tooling" class="section-block">
+      <span class="section-label">Tooling</span>
+      <h2>Coming soon</h2>
+      <p class="section-description">We are working with the community to catalog open source infrastructure for the transaction pipeline. Check back soon.</p>
+    </section>
+
+    <!-- 7. Observe -->
+    <section class="section-block">
+      <span class="section-label">Observe</span>
+      <h2>See for yourself</h2>
+      <p class="section-description">Community-built tools and dashboards. Track relay performance, builder market share, transaction latency, and validator behavior across the transaction pipeline.</p>
+      <ul id="tooling-observe-list" class="tools-list"></ul>
+    </section>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="js/hex-texture.js"></script>
+  <script src="js/blockspace-viz.js"></script>
+  <script src="js/block-auction.js"></script>
+  <script src="generated/config.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    renderResearchList('research-list', true);
+    renderToolingList('tooling-observe-list', SITE_CONFIG.tooling.observe);
+    renderLatestEvent('community-latest-event');
+    var hexEl = document.getElementById('hero-hex');
+    if (hexEl && typeof HEX_TEXTURE !== 'undefined') {
+      // Tile horizontally by repeating each line, then tile vertically
+      var lines = HEX_TEXTURE.split('\n');
+      var wide = lines.map(function(l) { return (l + '  ').repeat(8); }).join('\n');
+      hexEl.textContent = (wide + '\n').repeat(12);
+    }
+
+    // Narrative ASCII visuals
+    (function() {
+
+    })();
+  </script>
+</body>
+</html>

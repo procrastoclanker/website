@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Counterparty Without Counterparty Risk — Blockspace Forum</title>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="A Counterparty Without Counterparty Risk — Blockspace Forum">
+  <meta property="og:description" content="Ethereum's robustness and where the rails fall short">
+  <meta property="og:image" content="https://blockspace.forum/assets/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@blockspaceforum">
+  <meta name="twitter:title" content="A Counterparty Without Counterparty Risk — Blockspace Forum">
+  <meta name="twitter:description" content="Ethereum's robustness and where the rails fall short">
+  <meta name="twitter:image" content="https://blockspace.forum/assets/og-image.png">
+  <meta name="description" content="Ethereum's robustness and where the rails fall short">
+  <link rel="canonical" href="https://blockspace.forum/generated/learn/series/robustness.html">
+  <link rel="icon" href="../../../assets/favicon.ico">
+  <link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../../../css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "A Counterparty Without Counterparty Risk",
+    "description": "Ethereum's robustness and where the rails fall short",
+    "datePublished": "March 09, 2026",
+    "author": {
+      "@type": "Organization",
+      "name": "Blockspace Forum",
+      "url": "https://blockspace.forum"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Blockspace Forum",
+      "url": "https://blockspace.forum"
+    },
+    "mainEntityOfPage": "https://blockspace.forum/generated/learn/series/robustness.html"
+  }
+  </script>
+</head>
+<body data-base="../../../">
+  <nav id="site-nav"></nav>
+
+  <main class="container">
+    <div class="post-header">
+      <div class="post-meta">Part 6 · March 09, 2026 · <a href="https://x.com/blockspaceforum/status/2031019543020163080" target="_blank" rel="noopener">Original thread</a></div>
+      <h1>A Counterparty Without Counterparty Risk</h1>
+      <div class="post-subtitle">Ethereum's robustness and where the rails fall short</div>
+    </div>
+
+    <div class="post-content">
+      <p>Ethereum provides the most robust blockspace on earth. Users. Apps. L2s. Stablecoin issuers. Institutions. Degens. It acts as a counterparty without introducing counterparty risk. Its uptime outcompetes any other network. It will survive wars and give opportunities where current opportunities can&rsquo;t be provided.</p>
+<p>However, the transaction rails to access this network lack the same strength and robustness.</p>
+<p>But what does robustness even mean? We see robustness across three properties: <strong>liveness, fair access, and proposer agency</strong>. All of which are critical.</p>
+<h2>Liveness</h2>
+<p><strong>Liveness</strong> can be described as Ethereum&rsquo;s ability to continuously chug along processing transactions and stacking blocks, 24/7, 365 days a year, no matter what is happening in the world. The core protocol is designed for this with hundreds of thousands of validators, multiple client implementations, geographic distribution, and many other safeguards.</p>
+<p>But the current transaction rails are narrower. <a href="https://x.com/blockspaceforum/status/2027040326980948391">Two builders produce roughly 80% of blocks. Three relays handle 86% of traffic.</a> They share data centers, software, hardware dependencies, and legal risks. A hardware outage or issue doesn&rsquo;t stay local; it can impact a significant share of transactions trying to reach blocks.</p>
+<p>This concentration isn&rsquo;t accidental. <a href="https://arxiv.org/abs/2312.09654">Research shows geographic clustering among operators emerges from economic incentives in the protocol&rsquo;s architecture</a>, locations with favorable latency attract more operators, and the cycle reinforces itself. As a result, validators are heavily clustered around the Atlantic corridor, where latency is most favorable.</p>
+<figure><img alt="Validator distribution and inter-region internet latency" src="https://pbs.twimg.com/media/HC-eEqRXsAA8UTj?format=png&amp;name=large"><figcaption>Validator distribution and inter-region internet latency, from Yang et al. (2026) using data from Chainbound (2024).</figcaption></figure>
+<p>In summary, not only is the transaction journey not as robust as Ethereum, but its incentives actually degrade Ethereum&rsquo;s robustness by leaving its validator set concentrated.</p>
+<h2>Fair Access</h2>
+<p><strong>Fair access</strong> means equal access for all to blockspace. No matter your jurisdiction, who does and doesn&rsquo;t like you, or what your transaction does. Ethereum aims to provide full fair access. However, in the current transaction rails, there is a small operator set supporting the transaction rails that are in key jurisdictions vulnerable to legal and regulatory pressure that can disrupt this fair access.</p>
+<div class="stat-callout"><div class="stat-number">78%</div><div class="stat-text">of blocks were OFAC-compliant in the months following the Merge. Transactions involving sanctioned addresses were systematically excluded.</div></div>
+
+<p>This has already happened. In the months following the merge, up to 78% of blocks were OFAC-compliant. Transactions involving sanctioned addresses were systematically excluded from the chain.</p>
+<figure><img alt="OFAC compliance data from mevWatch.info" src="https://pbs.twimg.com/media/HC-eM7lakAEYi2t?format=png&amp;name=large"><figcaption>Source: <a href="https://mevwatch.info/">mevWatch.info</a></figcaption></figure>
+<p>That number has improved since. But the episode showed: when the operator set is small enough, external pressure can shape what gets included in Ethereum blocks.</p>
+<p>While multiple teams are exploring cryptographic enforcement tools (TEEs, MPC, FHE) and we believe they can help, the structural fix isn&rsquo;t forcing everyone into a single solution. Instead, we should be creating incentives and rails that encourage a more distributed operator set.</p>
+<h2>Proposer Agency</h2>
+<p><strong>Proposer agency</strong> is the third dimension. The Ethereum validator set is large, with over 1,000,000 active validators. In principle, they could enforce preferences: choosing relays that don&rsquo;t censor, favoring builders that include more transactions, and offering services like preconfirmations. In essence, the transaction journey would be more robust if each validator could express some view over some of the operators and operations in that pipeline. But, in practice, they can&rsquo;t&hellip; at least not without paying for it or teams coming together to change the way blocks are built.</p>
+<p>As we <a href="https://x.com/blockspaceforum/status/2027037604332384379">previously showed</a>, builders are incentivized to get exclusive flow. This concentrates block construction among a small set of builders. While this has a unique impact on Ethereum and the network, it also impacts anyone who wants to locally build. Building blocks locally or excluding builders or relays leads to a material opportunity cost in revenue.</p>
+<div class="stat-callout"><div class="stat-number">400%</div><div class="stat-text">more value in PBS blocks vs locally built blocks, trending to 7.65x in volatile periods. Opting out of PBS is economically punitive.</div></div>
+
+<p>A 2024 analysis from <a href="https://x.com/nero_eth">@nero_eth</a> demonstrated that blocks procured via the PBS pipeline pay a median 400% more than locally built blocks:</p>
+<figure><img alt="PBS vs local block value comparison" src="https://pbs.twimg.com/media/HC-eWsQW4AAzN-U?format=png&amp;name=large"><figcaption>Source: Toni Wahrstätter</figcaption></figure>
+<p>This has been trending upwards and scales with volatility. In the last 30 days, <a href="https://explorer.rated.network/relays?network=mainnet&amp;timeWindow=30d">PBS blocks have had a value surplus of 7.65x versus locally built blocks</a>.</p>
+<p>The pipeline also gates functionality. Services like preconfirmations (where a proposer commits to including a transaction ahead of a slot) expand Ethereum&rsquo;s capabilities. Or, even the ability to run software that has <a href="https://github.com/eserilev/il-boost">out-of-protocol mechanisms</a> like FOCIL could improve the robustness of Ethereum. However, without changes to the current transaction rails, proposers can&rsquo;t offer these guarantees.</p>
+<p>These three dynamics are connected; many a function of the same economic incentives driving concentration we previously wrote on. The infrastructure that processes most of Ethereum&rsquo;s blocks should match the resilience of the protocol itself, and certainly not degrade the actual network.</p>
+<p>Getting there means rethinking the incentives.</p>
+    </div>
+
+    <div class="post-nav" id="post-nav"></div>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="../../../generated/config.js"></script>
+  <script src="../../../js/main.js"></script>
+  <script>renderPostNav('robustness');</script>
+</body>
+</html>
