@@ -142,9 +142,7 @@
 <p>The minimum viable sub-slot duration is bounded by network latency, which can be managed by features such as the proposer heartbeat and optimized P2P layer discussed in Session 2. These features could be implemented in a sidecar (e.g. as a commit-boost module), and multiple P2P layers could be run in parallel. The group agreed that the exact sub-slot duration should start conservatively and be tuned based on network conditions; during the workshop, a reasonable initial duration was tentatively set at 1 second.</p>
 <p>The economic benefits of shorter slots were discussed, with general agreement that shorter slots will stimulate user activity by allowing multiple sequential transactions within a block. There were concerns that the value of CEX/DEX arbitrage transactions could be reduced by shorter block times, leading to reduced block value overall. The size and direction of the effect is as yet unclear and subject to empirical investigation. Similarly, the point was raised that longer slot times could allow for more coincidences of wants; a counterpoint was that order batching is already handled out of protocol by specialized applications.</p>
 <p>In the initial version (v1), relay operators form a trusted, permissioned set, with the exception of the TEE-based relay instances discussed in session 1. This is a pragmatic setup for shipping but not a permanent state. Under Attester-Proposer Separation (APS), proposers become sophisticated entities that can serve as neutral tiebreakers for bid selection, removing reliance on relay consensus. The system is designed to evolve toward permissionless operation, but the group emphasized: ship V1 now, let APS upgrade the trust model later.</p>
-<p>![][image4]
-<img alt="Sub-slot auction" src="../../../assets/learn/events/cannes-5.gif"></p>
-<p><em>The sub-block with the most valuable bid is carried forward to the next sub-slot.</em></p>
+<figure><img alt="Sub-slot auction" src="../../../assets/learn/events/cannes-5.gif"><figcaption>The sub-block with the most valuable bid is carried forward to the next sub-slot.</figcaption></figure>
 <h3><strong>Impact for Users and Ethereum</strong></h3>
 <p>The group identified the following benefits of the design:</p>
 <p><strong>Faster confirmations.</strong> Users receive intermediate confirmations after each sub-slot (\~1 second) rather than waiting the full 12 seconds. This makes transacting on Ethereum L1 feel faster without requiring any protocol changes, and allows multiple sequential transactions per slot.</p>
@@ -217,7 +215,6 @@
 </tr>
 </tbody>
 </table>
-<p>![][image5]</p>
 <figure><img alt="The Blockspace Forum will soon return" src="../../../assets/learn/events/cannes-6.png"><figcaption>The Blockspace Forum will soon return for its third installment</figcaption></figure>
       </div>
 

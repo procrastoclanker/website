@@ -149,7 +149,6 @@ The economic benefits of shorter slots were discussed, with general agreement th
 
 In the initial version (v1), relay operators form a trusted, permissioned set, with the exception of the TEE-based relay instances discussed in session 1\. This is a pragmatic setup for shipping but not a permanent state. Under Attester-Proposer Separation (APS), proposers become sophisticated entities that can serve as neutral tiebreakers for bid selection, removing reliance on relay consensus. The system is designed to evolve toward permissionless operation, but the group emphasized: ship V1 now, let APS upgrade the trust model later.
 
-![][image4]
 ![Sub-slot auction](../../../assets/learn/events/cannes-5.gif)
 
 *The sub-block with the most valuable bid is carried forward to the next sub-slot.*
@@ -197,8 +196,6 @@ Merging and sub-slots combine into scalable multi-party block building. This inc
 | **Relay Compensation** | None | Share of surplus generated for the slot | Share of surplus generated for multiple sub-slots |
 | **Builder entry barrier** | Must win entire slot | Can contribute to winning block | Can win sub-slots and contribute to sub-slots |
 | **Censorship resistance** | Limited to winning builder's inclusion | Winning builder’s inclusion \+ merging | Multiple builder’s inclusion \+ merging |
-
-![][image5]
 
 ![The Blockspace Forum will soon return](../../../assets/learn/events/cannes-6.png)
 
