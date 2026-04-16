@@ -13,7 +13,7 @@ const SITE_CONFIG = {
   banner: {
     active: false,
     text: "New: Cannes 2026 Workshop Recap",
-    link: "generated/learn/events/cannes-2026.html",
+    link: "learn/events/cannes-2026.html",
   },
 
   links: {
@@ -90,7 +90,7 @@ const SITE_CONFIG = {
       description: "The second Blockspace Forum gathering. Workshops, research presentations, and working sessions on the future of Ethereum's blockspace market.",
       video: "https://www.youtube.com/embed/ixJDu_h4unQ",
       status: "Read the latest",
-      link: "generated/learn/events/cannes-2026.html",
+      link: "learn/events/cannes-2026.html",
     },
     {
       title: "Blockspace Forum @ Devconnect BA",

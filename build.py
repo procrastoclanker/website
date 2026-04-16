@@ -3,8 +3,8 @@
 Blockspace Forum — Static Site Builder
 
 Reads markdown files from content/, generates:
-  - generated/learn/series/*.html  (one per markdown file)
-  - generated/config.js  (post registry auto-generated)
+  - learn/series/*.html  (one per markdown file)
+  - config.js  (post registry auto-generated)
   - index.html    (landing page)
   - blog.html     (post listing)
 
@@ -28,10 +28,10 @@ from datetime import date as date_type
 
 SITE_DIR = Path(__file__).parent
 CONTENT_DIR = SITE_DIR / "content" / "learn" / "series"
-POSTS_DIR = SITE_DIR / "generated" / "learn" / "series"
+POSTS_DIR = SITE_DIR / "learn" / "series"
 TEMPLATES_DIR = SITE_DIR / "templates"
 LEARN_CONTENT_DIR = SITE_DIR / "content" / "learn"
-LEARN_DIR = SITE_DIR / "generated" / "learn"
+LEARN_DIR = SITE_DIR / "learn"
 
 # ---- Frontmatter Parser ---- #
 
@@ -160,7 +160,7 @@ def build_posts():
             "slug": slug,
             "content": content_html,
             "part": "",
-            "base": "../../../",
+            "base": "../../",
             "site_url": SITE_URL,
         })
 
@@ -185,7 +185,7 @@ def build_posts():
 
         out_path = POSTS_DIR / f"{post['slug']}.html"
         out_path.write_text(html)
-        print(f"  Built generated/learn/series/{post['slug']}.html")
+        print(f"  Built learn/series/{post['slug']}.html")
 
     return posts_meta
 
@@ -201,7 +201,7 @@ def build_config(posts_meta):
         banner = yaml.safe_load(banner_path.read_text()) or {}
 
     existing_links = {}
-    config_path = SITE_DIR / "generated" / "config.js"
+    config_path = SITE_DIR / "config.js"
     if config_path.exists():
         config_text = config_path.read_text()
         for key in ["twitter", "github", "youtube", "ethresearch", "website", "discord", "telegram"]:
@@ -322,7 +322,7 @@ const SITE_CONFIG = {{
       description: "The second Blockspace Forum gathering. Workshops, research presentations, and working sessions on the future of Ethereum's blockspace market.",
       video: "https://www.youtube.com/embed/ixJDu_h4unQ",
       status: "Read the latest",
-      link: "generated/learn/events/cannes-2026.html",
+      link: "learn/events/cannes-2026.html",
     }},
     {{
       title: "Blockspace Forum @ Devconnect BA",
@@ -419,12 +419,12 @@ def build_learn():
             next_link = f'<a href="{n["slug"]}.html" class="learn-nav-next">{n["series"]}: {n["title"]} &rarr;</a>'
 
         subdir = page.get("subdir", "")
-        depth = len(Path(subdir).parts) + 2 if subdir else 2
+        depth = len(Path(subdir).parts) + 1 if subdir else 1
         base = "../" * depth
         if subdir:
-            page_path_val = f"generated/learn/{subdir}/{page['slug']}.html"
+            page_path_val = f"learn/{subdir}/{page['slug']}.html"
         else:
-            page_path_val = f"generated/learn/{page['slug']}.html"
+            page_path_val = f"learn/{page['slug']}.html"
 
         html = render_template(learn_template, {
             "title": page["title"],
@@ -444,10 +444,10 @@ def build_learn():
             out_dir = LEARN_DIR / subdir
             out_dir.mkdir(parents=True, exist_ok=True)
             out_path = out_dir / f"{page['slug']}.html"
-            page_path = f"generated/learn/{subdir}/{page['slug']}.html"
+            page_path = f"learn/{subdir}/{page['slug']}.html"
         else:
             out_path = LEARN_DIR / f"{page['slug']}.html"
-            page_path = f"generated/learn/{page['slug']}.html"
+            page_path = f"learn/{page['slug']}.html"
         out_path.write_text(html)
         print(f"  Built {page_path}")
 
@@ -468,7 +468,7 @@ def clean():
     """Remove generated post HTML files."""
     for f in POSTS_DIR.glob("*.html"):
         f.unlink()
-        print(f"  Removed generated/learn/series/{f.name}")
+        print(f"  Removed learn/series/{f.name}")
 
 
 # ---- Build Sitemap ---- #
@@ -501,7 +501,7 @@ def build_sitemap(posts_meta, learn_pages):
         subdir = page.get('subdir', '')
         sub_prefix = f"{subdir}/" if subdir else ""
         urls.append(f"""  <url>
-    <loc>{SITE_URL}/generated/learn/{sub_prefix}{page['slug']}.html</loc>
+    <loc>{SITE_URL}/learn/{sub_prefix}{page['slug']}.html</loc>
     <lastmod>{today}</lastmod>
     <priority>0.9</priority>
   </url>""")
@@ -510,7 +510,7 @@ def build_sitemap(posts_meta, learn_pages):
     for post in posts_meta:
         date = post.get("date", today)
         urls.append(f"""  <url>
-    <loc>{SITE_URL}/generated/learn/series/{post['slug']}.html</loc>
+    <loc>{SITE_URL}/learn/series/{post['slug']}.html</loc>
     <lastmod>{date}</lastmod>
     <priority>0.7</priority>
   </url>""")

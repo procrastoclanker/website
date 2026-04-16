@@ -96,7 +96,7 @@ function renderNav() {
     activeLink = 'research';
   } else if (path.includes('events')) {
     activeLink = 'events';
-  } else if (path.includes('learn') || path.includes('blog') || path.includes('pbs-') || path.includes('generated')) {
+  } else if (path.includes('learn') || path.includes('blog') || path.includes('pbs-')) {
     activeLink = 'learn';
   } else if (path.endsWith('/') || path.endsWith('index.html')) {
     activeLink = 'home';
@@ -375,7 +375,7 @@ function renderPostList(containerId, limit) {
     var num = String(globalIdx + 1).padStart(2, '0');
 
     var a = document.createElement('a');
-    a.href = BASE + 'generated/learn/series/' + post.slug + '.html';
+    a.href = BASE + 'learn/series/' + post.slug + '.html';
     a.className = 'post-card';
     a.innerHTML =
       '<span class="post-number">' + num + '</span>' +
@@ -559,9 +559,9 @@ function renderLearnIntro(containerId) {
   if (!container) return;
 
   var items = [
-    { level: "101", title: "The Basics", subtitle: "What is blockspace? What is a builder? What is a relay?", url: "generated/learn/pbs-101.html" },
-    { level: "201", title: "The Pipeline", subtitle: "Sidecars. The block auction. Timing games. Proposer agency.", url: "generated/learn/pbs-201.html" },
-    { level: "301", title: "The Frontier", subtitle: "ePBS. Preconfirmations. PEPC. Multi-party block construction.", url: "generated/learn/pbs-301.html" },
+    { level: "101", title: "The Basics", subtitle: "What is blockspace? What is a builder? What is a relay?", url: "learn/pbs-101.html" },
+    { level: "201", title: "The Pipeline", subtitle: "Sidecars. The block auction. Timing games. Proposer agency.", url: "learn/pbs-201.html" },
+    { level: "301", title: "The Frontier", subtitle: "ePBS. Preconfirmations. PEPC. Multi-party block construction.", url: "learn/pbs-301.html" },
   ];
 
   items.forEach(function(item) {

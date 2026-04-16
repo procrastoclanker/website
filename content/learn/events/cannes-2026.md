@@ -25,7 +25,7 @@ Additional technical background is included in the [introductory presentation](h
 
 ### **Kicking-off The Day Summarizing The Structural Gaps**
 
-The day began with a short discussion on [structural gaps](https://ethresear.ch/t/an-observation-on-ethereum-s-blockspace-market/23669) in the current transaction pipeline: 
+The day began with a short discussion on [structural gaps](https://x.com/blockspaceforum/status/2026671024348054009) in the current transaction pipeline: 
 
 * **Economics.** Originators are incentivized to send transactions exclusively to a single builder, because broadcasting to multiple builders causes priority fees to get competed away in the relay auction. As a result, builders construct blocks from partial views, blockspace goes underutilized, and relays have no sustainable revenue model despite performing critical infrastructure functions.  
 * **Robustness.** Winner-take-most dynamics shrink the active builder and relay set, raising correlated failure risk from implementation monocultures, shared infrastructure, and jurisdictional pressure.  
