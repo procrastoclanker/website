@@ -582,9 +582,17 @@ function renderBanner() {
   var banner = SITE_CONFIG.banner;
   if (!banner || !banner.active) return;
 
-  // Check if dismissed this session (keyed by banner text so new banners reappear)
+  // Dismissal is keyed by banner text so new banners reappear.
+  // On the home page we always show the banner (clearing any prior dismissal),
+  // so clicking X only hides it until the user navigates back home.
   var dismissKey = 'banner-dismissed:' + banner.text;
-  if (sessionStorage.getItem(dismissKey)) return;
+  var path = window.location.pathname;
+  var isHome = path === '/' || path.endsWith('/index.html') || path.endsWith('/') || path === '';
+  if (isHome) {
+    sessionStorage.removeItem(dismissKey);
+  } else if (sessionStorage.getItem(dismissKey)) {
+    return;
+  }
 
   var el = document.createElement('div');
   el.className = 'site-banner';
