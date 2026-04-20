@@ -11,7 +11,7 @@ const SITE_CONFIG = {
   description: "Education, research, and open source tooling for the infrastructure that moves Ethereum's transactions. This forum ships.",
 
   banner: {
-    active: false,
+    active: true,
     text: "New: Cannes 2026 Workshop Recap",
     link: "learn/events/cannes-2026.html",
   },
