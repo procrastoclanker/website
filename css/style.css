@@ -654,8 +654,7 @@ nav .container {
   border-color: var(--border-light);
 }
 
-.post-content video,
-.learn-video {
+.post-content video {
   width: 100%;
   border-radius: 4px;
   margin: 2rem 0;
@@ -1901,6 +1900,22 @@ footer a:hover {
 }
 
 /* Learn page: intro grid */
+.learn-video {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+}
+
+.learn-video video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
 .learn-posts-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
