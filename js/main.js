@@ -94,6 +94,8 @@ function renderNav() {
     activeLink = 'tooling';
   } else if (path.includes('research')) {
     activeLink = 'research';
+  } else if (path.includes('learn/series')) {
+    activeLink = 'research';
   } else if (path.includes('events')) {
     activeLink = 'events';
   } else if (path.includes('learn') || path.includes('blog') || path.includes('pbs-')) {
